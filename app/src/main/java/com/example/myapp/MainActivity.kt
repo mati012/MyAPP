@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -27,7 +28,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.myapp.ui.theme.MyappTheme
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -109,6 +112,8 @@ fun LoginScreen(navController: NavController) {
 
         TextButton(onClick = { navController.navigate("recuperar_contrasena") }) { Text("¿Olvidaste tu contraseña?") }
         TextButton(onClick = { navController.navigate("registro") }) { Text("Registrarse") }
+        Spacer(modifier = Modifier.height(16.dp))
+        Text( text = "Versión 1.0", color = Color.Gray)
     }
 }
 
@@ -164,21 +169,55 @@ fun RecuperarContrasenaScreen(navController: NavController) {
         TextButton(onClick = { navController.navigate("login") }) { Text("Volver a Login") }
     }
 }
-
 @Composable
 fun HomeScreen(navController: NavController) {
-    Column(
+    val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.planeta))
+    val progress by animateLottieCompositionAsState(
+        composition = composition,
+        iterations = LottieConstants.IterateForever
+    )
+
+    Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+            .padding(16.dp)
     ) {
-        Text("Bienvenido, ${currentUser ?: "Usuario"}")
-        Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = {
-            navController.navigate("login")
-            currentUser = null
-        }) { Text("Cerrar Sesión") }
+        // Botón Cerrar Sesión en la esquina superior derecha
+        Button(
+            onClick = {
+                navController.navigate("login")
+                currentUser = null
+            },
+            modifier = Modifier.align(Alignment.TopEnd)
+        ) {
+            Text("Cerrar Sesión")
+        }
+
+        // Texto de bienvenida justo arriba de la animación
+        Column(
+            modifier = Modifier.align(Alignment.Center),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = "Bienvenido, ${currentUser ?: "Usuario"}",
+                color = androidx.compose.ui.graphics.Color.Black,
+                style = androidx.compose.ui.text.TextStyle(fontSize = 30.sp)
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Animación Lottie
+            LottieAnimation(
+                composition = composition,
+                progress = { progress },
+                modifier = Modifier.size(300.dp)
+            )
+        }
     }
 }
+
+//@Preview(showBackground = true)
+//@Composable
+//fun PreviewHomeScreen() {
+//    HomeScreen(navController = rememberNavController())
+//}
