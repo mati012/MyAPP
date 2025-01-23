@@ -54,6 +54,7 @@ dependencies {
     implementation(libs.androidx.storage)
     implementation(libs.androidx.navigation.runtime.ktx)
     implementation(libs.androidx.navigation.compose)
+    implementation("com.airbnb.android:lottie-compose:6.6.2")
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

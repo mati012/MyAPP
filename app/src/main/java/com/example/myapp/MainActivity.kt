@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Scaffold
@@ -31,30 +32,31 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.airbnb.lottie.compose.*
 
 val usuarios = mutableListOf<Pair<String, String>>()
 var currentUser: String? = null
+
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-           AppNavigation()
+            AppNavigation()
         }
     }
 }
+
 @Composable
-fun AppNavigation(){
+fun AppNavigation() {
     val navController = rememberNavController()
-    NavHost(navController = navController, startDestination = "login"){
+    NavHost(navController = navController, startDestination = "login") {
         composable("login") { LoginScreen(navController) }
         composable("registro") { RegistroScreen(navController) }
         composable("recuperar_contrasena") { RecuperarContrasenaScreen(navController) }
         composable("home") { HomeScreen(navController) }
     }
-
 }
-
 
 @Composable
 fun LoginScreen(navController: NavController) {
@@ -62,21 +64,38 @@ fun LoginScreen(navController: NavController) {
     var password by remember { mutableStateOf("") }
     var errorMessage by remember { mutableStateOf("") }
 
+    val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.astronauta))
+    val progress by animateLottieCompositionAsState(
+        composition = composition,
+        iterations = LottieConstants.IterateForever
+    )
+
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp),
+            .padding(30.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        // Animación Lottie
+        LottieAnimation(
+            composition = composition,
+            progress = { progress },
+            modifier = Modifier.size(200.dp)
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Campos de texto y botones
         TextField(value = email, onValueChange = { email = it }, label = { Text("Correo electrónico") })
         Spacer(modifier = Modifier.height(8.dp))
         TextField(value = password, onValueChange = { password = it }, label = { Text("Contraseña") })
         Spacer(modifier = Modifier.height(16.dp))
+
         if (errorMessage.isNotEmpty()) {
             Text(text = errorMessage, color = androidx.compose.ui.graphics.Color.Red)
             Spacer(modifier = Modifier.height(8.dp))
         }
+
         Button(onClick = {
             val userExists = usuarios.any { it.first == email && it.second == password }
             if (userExists) {
@@ -87,6 +106,7 @@ fun LoginScreen(navController: NavController) {
                 errorMessage = "Credenciales incorrectas"
             }
         }) { Text("Iniciar Sesión") }
+
         TextButton(onClick = { navController.navigate("recuperar_contrasena") }) { Text("¿Olvidaste tu contraseña?") }
         TextButton(onClick = { navController.navigate("registro") }) { Text("Registrarse") }
     }
@@ -144,6 +164,7 @@ fun RecuperarContrasenaScreen(navController: NavController) {
         TextButton(onClick = { navController.navigate("login") }) { Text("Volver a Login") }
     }
 }
+
 @Composable
 fun HomeScreen(navController: NavController) {
     Column(
