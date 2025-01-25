@@ -36,6 +36,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.airbnb.lottie.compose.*
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 
 val usuarios = mutableListOf<Pair<String, String>>()
 var currentUser: String? = null
@@ -65,6 +67,7 @@ fun AppNavigation() {
 fun LoginScreen(navController: NavController) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    var passwordVisible by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf("") }
 
     val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.astronauta))
@@ -88,10 +91,27 @@ fun LoginScreen(navController: NavController) {
         )
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Campos de texto y botones
-        TextField(value = email, onValueChange = { email = it }, label = { Text("Correo electrónico") })
+        // Campo de correo electrónico
+        TextField(
+            value = email,
+            onValueChange = { email = it },
+            label = { Text("Correo electrónico") }
+        )
         Spacer(modifier = Modifier.height(8.dp))
-        TextField(value = password, onValueChange = { password = it }, label = { Text("Contraseña") })
+
+        // Campo de contraseña con visualización oculta
+        TextField(
+            value = password,
+            onValueChange = { password = it },
+            label = { Text("Contraseña") },
+            visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+            trailingIcon = {
+                val icon = if (passwordVisible) "Ocultar" else "Mostrar"
+                TextButton(onClick = { passwordVisible = !passwordVisible }) {
+                    Text(icon)
+                }
+            }
+        )
         Spacer(modifier = Modifier.height(16.dp))
 
         if (errorMessage.isNotEmpty()) {
@@ -113,15 +133,18 @@ fun LoginScreen(navController: NavController) {
         TextButton(onClick = { navController.navigate("recuperar_contrasena") }) { Text("¿Olvidaste tu contraseña?") }
         TextButton(onClick = { navController.navigate("registro") }) { Text("Registrarse") }
         Spacer(modifier = Modifier.height(16.dp))
-        Text( text = "Versión 1.0", color = Color.Gray)
+        Text(text = "Versión 1.0", color = Color.Gray)
     }
 }
+
+
 
 @Composable
 fun RegistroScreen(navController: NavController) {
     var nombre by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    var passwordVisible by remember { mutableStateOf(false) }
     var termsAccepted by remember { mutableStateOf(false) }
 
     Column(
@@ -131,24 +154,66 @@ fun RegistroScreen(navController: NavController) {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        TextField(value = nombre, onValueChange = { nombre = it }, label = { Text("Nombre") })
+
+        Text(
+            text = "Registro",
+            fontSize = 30.sp,
+            color = androidx.compose.ui.graphics.Color.Black
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Campo de Nombre
+        TextField(
+            value = nombre,
+            onValueChange = { nombre = it },
+            label = { Text("Nombre") }
+        )
         Spacer(modifier = Modifier.height(8.dp))
-        TextField(value = email, onValueChange = { email = it }, label = { Text("Correo electrónico") })
+
+        // Campo de Correo Electrónico
+        TextField(
+            value = email,
+            onValueChange = { email = it },
+            label = { Text("Correo electrónico") }
+        )
         Spacer(modifier = Modifier.height(8.dp))
-        TextField(value = password, onValueChange = { password = it }, label = { Text("Contraseña") })
+
+        // Campo de Contraseña con opción de mostrar/ocultar
+        TextField(
+            value = password,
+            onValueChange = { password = it },
+            label = { Text("Contraseña") },
+            visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+            trailingIcon = {
+                val icon = if (passwordVisible) "Ocultar" else "Mostrar"
+                TextButton(onClick = { passwordVisible = !passwordVisible }) {
+                    Text(icon)
+                }
+            }
+        )
         Spacer(modifier = Modifier.height(8.dp))
+
+        // Checkbox para aceptar términos y condiciones
         Row(verticalAlignment = Alignment.CenterVertically) {
             Checkbox(checked = termsAccepted, onCheckedChange = { termsAccepted = it })
             Text("Acepto los términos y condiciones")
         }
         Spacer(modifier = Modifier.height(16.dp))
+
+        // Botón de Registro
         Button(onClick = {
             if (nombre.isNotBlank() && email.isNotBlank() && password.isNotBlank() && termsAccepted) {
                 usuarios.add(email to password)
                 navController.navigate("login")
             }
-        }) { Text("Registrar") }
-        TextButton(onClick = { navController.navigate("login") }) { Text("Volver a Login") }
+        }) {
+            Text("Registrar")
+        }
+
+        // Botón para volver al Login
+        TextButton(onClick = { navController.navigate("login") }) {
+            Text("Volver a Login")
+        }
     }
 }
 
@@ -163,10 +228,31 @@ fun RecuperarContrasenaScreen(navController: NavController) {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        TextField(value = email, onValueChange = { email = it }, label = { Text("Correo electrónico") })
+
+        Text(
+            text = "Recuperar Contraseña",
+            fontSize = 30.sp,
+            color = androidx.compose.ui.graphics.Color.Black
+        )
         Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = { /* Lógica para enviar correo */ }) { Text("Recuperar Contraseña") }
-        TextButton(onClick = { navController.navigate("login") }) { Text("Volver a Login") }
+
+        // Campo de Correo Electrónico
+        TextField(
+            value = email,
+            onValueChange = { email = it },
+            label = { Text("Correo electrónico") }
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Botón para recuperar contraseña
+        Button(onClick = { }) {
+            Text("Recuperar Contraseña")
+        }
+
+        // Botón para volver al Login
+        TextButton(onClick = { navController.navigate("login") }) {
+            Text("Volver a Login")
+        }
     }
 }
 @Composable
@@ -188,7 +274,7 @@ fun HomeScreen(navController: NavController) {
                 navController.navigate("login")
                 currentUser = null
             },
-            modifier = Modifier.align(Alignment.TopEnd)
+            modifier = Modifier.align(Alignment.TopEnd).padding(16.dp)
         ) {
             Text("Cerrar Sesión")
         }
