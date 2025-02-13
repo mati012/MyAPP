@@ -2,6 +2,10 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    // Plugin de Google Services para Firebase
+    id("com.google.gms.google-services") version "4.4.2" apply false
+
+
 }
 
 android {
@@ -9,7 +13,7 @@ android {
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.example.myapp"
+        applicationId = "App01.Android01"
         minSdk = 30
         targetSdk = 34
         versionCode = 1
@@ -55,6 +59,15 @@ dependencies {
     implementation(libs.androidx.navigation.runtime.ktx)
     implementation(libs.androidx.navigation.compose)
     implementation("com.airbnb.android:lottie-compose:6.6.2")
+
+    // Firebase BoM para centralizar versiones de Firebase
+    implementation(platform("com.google.firebase:firebase-bom:33.9.0"))
+    implementation("com.google.firebase:firebase-analytics")
+    // Firebase Realtime Database (CRUD de usuarios)
+    implementation("com.google.firebase:firebase-database-ktx")
+    // (Opcional) Dependencia para geolocalización
+    implementation("com.google.android.gms:play-services-location:21.0.1")
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -63,3 +76,4 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 }
+apply(plugin = "com.google.gms.google-services")
