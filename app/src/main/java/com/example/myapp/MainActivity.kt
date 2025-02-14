@@ -12,6 +12,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -33,6 +34,14 @@ import com.example.myapp.ui.theme.MyappTheme
 import com.google.firebase.database.*
 import com.google.android.gms.location.LocationServices
 import java.util.Locale
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.ExitToApp
+import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material.icons.filled.Mic
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.painterResource
+
 
 // Variable global para almacenar el usuario actual (se recomienda usar ViewModel para producción)
 var currentUser: String? = null
@@ -319,55 +328,168 @@ fun RecuperarContrasenaScreen(navController: NavController) {
 
 @Composable
 fun HomeScreen(navController: NavController) {
-
+    // Animación del planeta
     val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.planeta))
     val progress by animateLottieCompositionAsState(
         composition = composition,
         iterations = LottieConstants.IterateForever
     )
 
-    Box(modifier = Modifier.fillMaxSize().padding(16.dp)) {
-        Button(
-            onClick = {
-                currentUser = null
-                navController.navigate("login")
-            },
-            modifier = Modifier.align(Alignment.TopEnd).padding(16.dp)
-        ) {
-            Text("Cerrar Sesión")
-        }
-        Column(
-            modifier = Modifier.align(Alignment.Center),
-            horizontalAlignment = Alignment.CenterHorizontally
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
+    ) {
+        // Cabecera con título y botón de cerrar sesión
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 50.dp, start = 16.dp, end = 16.dp)
+                .align(Alignment.TopCenter),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "Bienvenido, ${currentUser ?: "Usuario"}",
-                color = Color.Black,
-                style = androidx.compose.ui.text.TextStyle(fontSize = 30.sp)
+                text = "Bienvenido,\n${currentUser?.substringBefore('@') ?: "Usuario"}",
+                style = MaterialTheme.typography.headlineMedium,
+                color = MaterialTheme.colorScheme.primary
             )
-            Spacer(modifier = Modifier.height(16.dp))
-            // Botones para navegar a las nuevas pantallas de accesibilidad
-            Button(onClick = { navController.navigate("escribir") }) {
-                Text("Escribir")
+
+            Button(
+                onClick = {
+                    currentUser = null
+                    navController.navigate("login")
+                },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.error
+                )
+            ) {
+                Icon(
+                    imageVector = Icons.Default.ExitToApp,
+                    contentDescription = "Cerrar Sesión",
+                    modifier = Modifier.size(24.dp)
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text("Cerrar Sesión")
             }
-            Spacer(modifier = Modifier.height(8.dp))
-            Button(onClick = { navController.navigate("hablar") }) {
-                Text("Hablar")
-            }
-            Spacer(modifier = Modifier.height(8.dp))
-            Button(onClick = { navController.navigate("buscarDispositivo") }) {
-                Text("Buscar Dispositivo")
-            }
-            Spacer(modifier = Modifier.height(16.dp))
+        }
+
+        // Contenido principal centrado
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(24.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            // Animación del planeta
             LottieAnimation(
                 composition = composition,
                 progress = { progress },
-                modifier = Modifier.size(300.dp)
+                modifier = Modifier
+                    .size(200.dp)
+                    .padding(bottom = 32.dp)
             )
+
+            // Tarjetas de funcionalidades
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.primaryContainer
+                )
+            ) {
+                Column(
+                    modifier = Modifier.padding(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        "Accesibilidad",
+                        style = MaterialTheme.typography.titleLarge,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer,
+                        modifier = Modifier.padding(bottom = 16.dp)
+                    )
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceEvenly
+                    ) {
+                        // Botón Escribir
+                        Button(
+                            onClick = { navController.navigate("escribir") },
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(horizontal = 4.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.primary
+                            )
+                        ) {
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Edit,
+                                    contentDescription = "Escribir",
+                                    modifier = Modifier.size(24.dp)
+                                )
+                                Spacer(modifier = Modifier.height(4.dp))
+                                Text("Escribir")
+                            }
+                        }
+
+                        // Botón Hablar
+                        Button(
+                            onClick = { navController.navigate("hablar") },
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(horizontal = 4.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.primary
+                            )
+                        ) {
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Mic,
+                                    contentDescription = "Hablar",
+                                    modifier = Modifier.size(24.dp)
+                                )
+                                Spacer(modifier = Modifier.height(4.dp))
+                                Text("Hablar")
+                            }
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    // Botón Buscar Dispositivo
+                    Button(
+                        onClick = { navController.navigate("buscarDispositivo") },
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.secondary
+                        )
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.LocationOn,
+                                contentDescription = "Buscar Dispositivo",
+                                modifier = Modifier.size(24.dp)
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text("Buscar Dispositivo")
+                        }
+                    }
+                }
+            }
         }
     }
 }
-
 @Composable
 fun EscribirScreen(navController: NavController) {
     val context = LocalContext.current

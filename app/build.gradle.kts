@@ -59,6 +59,7 @@ dependencies {
     implementation(libs.androidx.navigation.runtime.ktx)
     implementation(libs.androidx.navigation.compose)
     implementation("com.airbnb.android:lottie-compose:6.6.2")
+    implementation("androidx.compose.material:material-icons-extended:1.5.0")
 
     // Firebase BoM para centralizar versiones de Firebase
     implementation(platform("com.google.firebase:firebase-bom:33.9.0"))
