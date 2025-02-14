@@ -43,10 +43,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.painterResource
 
 
-// Variable global para almacenar el usuario actual (se recomienda usar ViewModel para producción)
+
 var currentUser: String? = null
 
-// Data class para representar al usuario
+
 data class User(
     val id: String? = null,
     val nombre: String = "",
@@ -82,7 +82,7 @@ fun AppNavigation() {
 
 @Composable
 fun LoginScreen(navController: NavController) {
-    // Referencia a la base de datos de Firebase
+
     val database = FirebaseDatabase.getInstance().reference
 
     var email by remember { mutableStateOf("") }
@@ -90,7 +90,7 @@ fun LoginScreen(navController: NavController) {
     var passwordVisible by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf("") }
 
-    // Animación Lottie (asegúrate de tener el recurso R.raw.astronauta)
+
     val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.astronauta))
     val progress by animateLottieCompositionAsState(
         composition = composition,
@@ -132,7 +132,7 @@ fun LoginScreen(navController: NavController) {
             Spacer(modifier = Modifier.height(8.dp))
         }
         Button(onClick = {
-            // Buscar el usuario por email en Realtime Database
+
             database.child("users").orderByChild("email").equalTo(email)
                 .addListenerForSingleValueEvent(object : ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {
@@ -328,7 +328,7 @@ fun RecuperarContrasenaScreen(navController: NavController) {
 
 @Composable
 fun HomeScreen(navController: NavController) {
-    // Animación del planeta
+
     val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.planeta))
     val progress by animateLottieCompositionAsState(
         composition = composition,
@@ -340,7 +340,7 @@ fun HomeScreen(navController: NavController) {
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
     ) {
-        // Cabecera con título y botón de cerrar sesión
+
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -374,7 +374,7 @@ fun HomeScreen(navController: NavController) {
             }
         }
 
-        // Contenido principal centrado
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -382,7 +382,7 @@ fun HomeScreen(navController: NavController) {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            // Animación del planeta
+
             LottieAnimation(
                 composition = composition,
                 progress = { progress },
@@ -391,7 +391,7 @@ fun HomeScreen(navController: NavController) {
                     .padding(bottom = 32.dp)
             )
 
-            // Tarjetas de funcionalidades
+
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -415,7 +415,7 @@ fun HomeScreen(navController: NavController) {
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceEvenly
                     ) {
-                        // Botón Escribir
+
                         Button(
                             onClick = { navController.navigate("escribir") },
                             modifier = Modifier
@@ -438,7 +438,7 @@ fun HomeScreen(navController: NavController) {
                             }
                         }
 
-                        // Botón Hablar
+
                         Button(
                             onClick = { navController.navigate("hablar") },
                             modifier = Modifier
@@ -464,7 +464,7 @@ fun HomeScreen(navController: NavController) {
 
                     Spacer(modifier = Modifier.height(8.dp))
 
-                    // Botón Buscar Dispositivo
+
                     Button(
                         onClick = { navController.navigate("buscarDispositivo") },
                         modifier = Modifier.fillMaxWidth(),
@@ -495,10 +495,10 @@ fun EscribirScreen(navController: NavController) {
     val context = LocalContext.current
     var textToSpeak by remember { mutableStateOf("") }
 
-    // Usamos un estado para almacenar la instancia de TextToSpeech
+
     val ttsState = remember { mutableStateOf<TextToSpeech?>(null) }
 
-    // Inicializamos el TextToSpeech y configuramos el idioma en el callback de onInit
+
     LaunchedEffect(Unit) {
         ttsState.value = TextToSpeech(context) { status ->
             if (status == TextToSpeech.SUCCESS) {
@@ -507,7 +507,7 @@ fun EscribirScreen(navController: NavController) {
         }
     }
 
-    // Aseguramos liberar el recurso cuando se desmonte el composable
+
     DisposableEffect(ttsState.value) {
         onDispose {
             ttsState.value?.shutdown()
@@ -546,7 +546,7 @@ fun EscribirScreen(navController: NavController) {
 fun HablarScreen(navController: NavController) {
     val context = LocalContext.current
     var recognizedText by remember { mutableStateOf("") }
-    // Launcher para el intent de reconocimiento de voz
+
     val speechLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult()
     ) { result ->
@@ -566,7 +566,7 @@ fun HablarScreen(navController: NavController) {
         Text("Hablar: Presione para hablar", fontSize = 20.sp)
         Spacer(modifier = Modifier.height(16.dp))
         Button(onClick = {
-            // Crea el intent para reconocimiento de voz
+
             val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
                 putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
                 putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault())
