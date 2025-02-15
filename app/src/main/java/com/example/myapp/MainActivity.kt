@@ -495,9 +495,13 @@ fun EscribirScreen(navController: NavController) {
     val context = LocalContext.current
     var textToSpeak by remember { mutableStateOf("") }
 
+    val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.planeta))
+    val progress by animateLottieCompositionAsState(
+        composition = composition,
+        iterations = LottieConstants.IterateForever
+    )
 
     val ttsState = remember { mutableStateOf<TextToSpeech?>(null) }
-
 
     LaunchedEffect(Unit) {
         ttsState.value = TextToSpeech(context) { status ->
@@ -506,7 +510,6 @@ fun EscribirScreen(navController: NavController) {
             }
         }
     }
-
 
     DisposableEffect(ttsState.value) {
         onDispose {
@@ -521,6 +524,14 @@ fun EscribirScreen(navController: NavController) {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        LottieAnimation(
+            composition = composition,
+            progress = { progress },
+            modifier = Modifier
+                .size(200.dp)
+                .padding(bottom = 32.dp)
+        )
+
         Text("Escribir: Ingrese el texto y escúchelo", fontSize = 20.sp)
         Spacer(modifier = Modifier.height(16.dp))
         TextField(
@@ -541,11 +552,16 @@ fun EscribirScreen(navController: NavController) {
     }
 }
 
-
 @Composable
 fun HablarScreen(navController: NavController) {
     val context = LocalContext.current
     var recognizedText by remember { mutableStateOf("") }
+
+    val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.planeta))
+    val progress by animateLottieCompositionAsState(
+        composition = composition,
+        iterations = LottieConstants.IterateForever
+    )
 
     val speechLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult()
@@ -563,10 +579,17 @@ fun HablarScreen(navController: NavController) {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        LottieAnimation(
+            composition = composition,
+            progress = { progress },
+            modifier = Modifier
+                .size(200.dp)
+                .padding(bottom = 32.dp)
+        )
+
         Text("Hablar: Presione para hablar", fontSize = 20.sp)
         Spacer(modifier = Modifier.height(16.dp))
         Button(onClick = {
-
             val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
                 putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
                 putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault())
@@ -591,6 +614,12 @@ fun BuscarDispositivoScreen(navController: NavController) {
     val fusedLocationClient = remember { LocationServices.getFusedLocationProviderClient(context) }
     var locationText by remember { mutableStateOf("Ubicación no disponible") }
 
+    val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.planeta))
+    val progress by animateLottieCompositionAsState(
+        composition = composition,
+        iterations = LottieConstants.IterateForever
+    )
+
     LaunchedEffect(Unit) {
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
             != PackageManager.PERMISSION_GRANTED
@@ -613,6 +642,14 @@ fun BuscarDispositivoScreen(navController: NavController) {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        LottieAnimation(
+            composition = composition,
+            progress = { progress },
+            modifier = Modifier
+                .size(200.dp)
+                .padding(bottom = 32.dp)
+        )
+
         Text("Buscar Dispositivo (Geolocalización)", fontSize = 20.sp)
         Spacer(modifier = Modifier.height(16.dp))
         Text(locationText)
